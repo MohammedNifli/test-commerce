@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Package, Truck, MapPin, User, Phone, Mail } from 'lucide-react';
 import api from '../api/axios';
 import { useCartStore } from '../store/useCartStore';
-
-const getImageSrc = (url: string) =>
-  url.startsWith('http') ? url : `http://localhost:5000${url}`;
+import { imgSrc as getImageSrc } from '../config';
 
 const Checkout = () => {
   const navigate = useNavigate();

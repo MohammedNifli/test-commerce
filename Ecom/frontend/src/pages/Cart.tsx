@@ -1,13 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
+import { imgSrc as getImageSrc } from '../config';
 
 const Cart = () => {
   const navigate = useNavigate();
   const { items, removeItem, updateQuantity, getTotal, clearCart } = useCartStore();
-
-  const getImageSrc = (url: string) =>
-    url.startsWith('http') ? url : `http://localhost:5000${url}`;
 
   if (items.length === 0) {
     return (

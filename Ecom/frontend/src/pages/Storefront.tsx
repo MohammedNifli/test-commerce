@@ -4,6 +4,7 @@ import { ShoppingCart, Search, Heart, Package, AlertCircle, CheckCircle } from '
 import api from '../api/axios';
 import { useCartStore, type Product } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
+import { imgSrc } from '../config';
 
 const Storefront = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -228,7 +229,7 @@ const Storefront = () => {
                     >
                       {product.imageUrl ? (
                         <img
-                          src={product.imageUrl.startsWith('http') ? product.imageUrl : `http://localhost:5000${product.imageUrl}`}
+                          src={imgSrc(product.imageUrl)}
                           alt={product.name}
                           className="product-image"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

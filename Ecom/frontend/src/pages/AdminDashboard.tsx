@@ -5,6 +5,7 @@ import {
   CheckCircle, XCircle, FileText, ChevronDown, ChevronUp, Loader, AlertTriangle,
 } from 'lucide-react';
 import api from '../api/axios';
+import { imgSrc as getImgSrc } from '../config';
 
 interface UploadResult {
   message: string;
@@ -21,8 +22,6 @@ const STATUS_CONFIG: Record<string, { color: string; bg: string; border: string 
   CANCELLED:  { color: '#ef4444', bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.35)' },
 };
 
-const getImgSrc = (url: string) =>
-  url?.startsWith('http') ? url : `http://localhost:5000${url}`;
 
 const AdminDashboard = () => {
   const navigate = useNavigate();

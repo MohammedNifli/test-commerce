@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, Heart, ShoppingCart } from 'lucide-react';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useCartStore } from '../store/useCartStore';
+import { imgSrc } from '../config';
 
 const Wishlist = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Wishlist = () => {
               <div key={product.id} className="product-card glass-panel" style={{ background: 'rgba(0,0,0,0.2)' }}>
                 <div className="product-image-container cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
                   {product.imageUrl ? (
-                    <img src={`http://localhost:5000${product.imageUrl}`} alt={product.name} className="product-image" />
+                    <img src={imgSrc(product.imageUrl)} alt={product.name} className="product-image" />
                   ) : (
                     <div className="product-image-placeholder">No Image</div>
                   )}
