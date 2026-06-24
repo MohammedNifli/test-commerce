@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ElectroTech</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Speako — Agentic E-commerce AI -->
+    <script>
+      window.SpeakoConfig = {
+        backendUrl: "http://localhost:8000",
+        storeName:  "ElectroTech",
+        email:      "admin@electrotech.com",
+        apiUrl:     "http://localhost:5000/api/speako",
+        apiKey:     "electrotech_secret_key_123",
+      };
+    </script>
+    <script src="http://localhost:8000/static/speako-loader.js" async></script>
+
+  </body>
+</html>

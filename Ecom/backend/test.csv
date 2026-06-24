@@ -1,0 +1,4 @@
+name,price,stock,category,description,imageUrl
+Test Product A,19.99,50,Electronics,A sample electronic product,
+Test Product B,9.99,200,Books,A sample book,
+Test Product C,49.99,10,Clothing,A sample clothing item,
