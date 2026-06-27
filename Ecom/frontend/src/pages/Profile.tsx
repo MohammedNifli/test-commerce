@@ -19,44 +19,28 @@ const Profile = () => {
   const profile = useProfileStore((s) => s.profile);
   const clearProfile = useProfileStore((s) => s.clearProfile);
 
-  const [email, setEmail] = useState(profile?.customerEmail || '');
   const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(!!profile?.customerEmail);
   const [error, setError] = useState('');
 
-  const fetchOrders = async (lookupEmail: string) => {
-    if (!lookupEmail.trim()) return;
-    setLoading(true);
-    setError('');
-    setSearched(true);
-    try {
-      const { data } = await api.get(`/orders/my?email=${encodeURIComponent(lookupEmail.trim())}`);
-      setOrders(data);
-    } catch {
-      setError('Could not load your orders. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Auto-load order history for a returning customer.
+  // Auto-load the order history for the email saved at checkout.
   useEffect(() => {
-    if (profile?.customerEmail) fetchOrders(profile.customerEmail);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleLookup = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchOrders(email);
-  };
-
-  const signOut = () => {
-    clearProfile();
-    setEmail('');
-    setOrders([]);
-    setSearched(false);
-  };
+    const email = profile?.customerEmail;
+    if (!email) {
+      setLoading(false);
+      return;
+    }
+    (async () => {
+      try {
+        const { data } = await api.get(`/orders/my?email=${encodeURIComponent(email)}`);
+        setOrders(data);
+      } catch {
+        setError('Could not load your orders. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [profile?.customerEmail]);
 
   return (
     <>
@@ -67,7 +51,7 @@ const Profile = () => {
           <p className="page-subtitle">Your details and order history</p>
         </div>
 
-        {profile ? (
+        {profile && (
           <div className="glass-panel profile-card">
             <div className="profile-avatar"><User size={30} /></div>
             <div className="profile-fields">
@@ -78,27 +62,9 @@ const Profile = () => {
                 <MapPin size={14} /> {profile.address}, {profile.city} {profile.postalCode}, {profile.country}
               </div>
             </div>
-            <button className="btn-secondary profile-signout" onClick={signOut}>
+            <button className="btn-secondary profile-signout" onClick={clearProfile}>
               <LogOut size={16} /> Sign out
             </button>
-          </div>
-        ) : (
-          <div className="glass-panel" style={{ padding: '1.75rem' }}>
-            <h2 style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>Find your orders</h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
-              Enter the email you used at checkout to view your order history.
-            </p>
-            <form onSubmit={handleLookup} className="profile-lookup">
-              <input
-                className="input-field"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button className="btn-primary" type="submit">View Orders</button>
-            </form>
           </div>
         )}
 
@@ -118,12 +84,12 @@ const Profile = () => {
           </div>
         )}
 
-        {!loading && !error && searched && orders.length === 0 && (
+        {!loading && !error && orders.length === 0 && (
           <div className="empty-state">
             <Package size={56} className="empty-state-icon" />
-            <h2>No orders found</h2>
-            <p style={{ color: 'var(--text-secondary)' }}>We couldn't find any orders for that email.</p>
-            <button className="btn-secondary" onClick={() => navigate('/products')}>Start shopping</button>
+            <h2>No orders yet</h2>
+            <p style={{ color: 'var(--text-secondary)' }}>Your orders will appear here after you place one.</p>
+            <button className="btn-primary" onClick={() => navigate('/products')}>Start shopping</button>
           </div>
         )}
 
