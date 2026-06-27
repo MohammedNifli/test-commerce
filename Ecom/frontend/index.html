@@ -12,6 +12,9 @@
 
     <!-- Speako — Agentic E-commerce AI -->
     <script>
+      // Pin the Speako tenant. The loader caches tenant_id in localStorage keyed
+      // by apiKey and reuses it instead of auto-onboarding a new (empty) tenant.
+      localStorage.setItem('speako_tid_electrotech_secret_key_123', '798601dc-9f8f-4bef-b467-5e68eb6b1f6f');
       window.SpeakoConfig = {
         backendUrl: "https://agentic-ecommerce-k16f.onrender.com",
         storeName:  "ElectroTech",
