@@ -5,6 +5,7 @@ import api from '../api/axios';
 import { useCartStore, type Product } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { imgSrc } from '../config';
+import Header from '../components/Header';
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,29 +46,34 @@ const ProductPage = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-        <div className="loading-spinner">Loading product details...</div>
-      </div>
+      <>
+        <Header />
+        <div className="loading-spinner" style={{ padding: '6rem 2rem' }}>Loading product details...</div>
+      </>
     );
   }
 
   if (error || !product) {
     return (
-      <div className="empty-state animate-fade-up" style={{ minHeight: '100vh' }}>
-        <Package size={64} className="empty-state-icon" />
-        <h2>{error || 'Product not found'}</h2>
-        <button className="btn-primary" onClick={() => navigate('/')}>Back to Store</button>
-      </div>
+      <>
+        <Header />
+        <div className="empty-state animate-fade-up" style={{ padding: '6rem 2rem' }}>
+          <Package size={64} className="empty-state-icon" />
+          <h2>{error || 'Product not found'}</h2>
+          <button className="btn-primary" onClick={() => navigate('/products')}>Browse Products</button>
+        </div>
+      </>
     );
   }
 
   const inWishlist = isInWishlist(product.id);
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <button className="back-btn" onClick={() => navigate('/')}>
-          <ArrowLeft size={20} /> Back to Store
+    <>
+      <Header />
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem 1.5rem 0' }}>
+        <button className="back-btn" onClick={() => navigate('/products')}>
+          <ArrowLeft size={20} /> Back to Products
         </button>
       </div>
 
@@ -143,7 +149,7 @@ const ProductPage = () => {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

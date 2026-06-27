@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Storefront from './pages/Storefront';
+import Products from './pages/Products';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import AdminDashboard from './pages/AdminDashboard';
@@ -12,6 +13,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Storefront />} />
+        <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<Cart />} />
