@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Package, Truck, MapPin, User, Phone, Mail } from 'lucide-react';
 import api from '../api/axios';
 import { useCartStore } from '../store/useCartStore';
+import { useProfileStore } from '../store/useProfileStore';
 import { imgSrc as getImageSrc } from '../config';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, getTotal, clearCart } = useCartStore();
+  const setProfile = useProfileStore((s) => s.setProfile);
 
   const [form, setForm] = useState({
     customerName: '',
@@ -36,6 +38,7 @@ const Checkout = () => {
         ...form,
         items: items.map(i => ({ productId: i.id, quantity: i.quantity })),
       });
+      setProfile(form); // remember details for the Profile page / order history
       clearCart();
       setOrderId(data.order?.id || '');
       setSuccess(true);

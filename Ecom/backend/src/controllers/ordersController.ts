@@ -67,6 +67,25 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+// Public: a customer looks up their own orders by the email used at checkout.
+export const getOrdersByEmail = async (req: Request, res: Response) => {
+  try {
+    const email = ((req.query.email as string) || '').trim();
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+    const orders = await prisma.order.findMany({
+      where: { customerEmail: { equals: email, mode: 'insensitive' } },
+      include: { items: { include: { product: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders by email:', error);
+    res.status(500).json({ message: 'Error fetching orders' });
+  }
+};
+
 export const getOrders = async (req: Request, res: Response) => {
   try {
     const orders = await prisma.order.findMany({

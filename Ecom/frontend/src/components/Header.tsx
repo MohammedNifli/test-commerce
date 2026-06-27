@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Package, Search, Heart, ShoppingCart, Menu, X } from 'lucide-react';
+import { Package, Search, Heart, ShoppingCart, Menu, X, User } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 
@@ -73,6 +73,9 @@ const Header = () => {
             <ShoppingCart size={22} />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
+          <button className="cart-btn" aria-label="Profile" onClick={() => navigate('/profile')}>
+            <User size={22} />
+          </button>
         </div>
       </div>
 
@@ -116,6 +119,9 @@ const Header = () => {
               ))}
               <NavLink to="/cart" onClick={() => setMenuOpen(false)} className={({ isActive }) => `drawer-link ${isActive ? 'active' : ''}`}>
                 Cart
+              </NavLink>
+              <NavLink to="/profile" onClick={() => setMenuOpen(false)} className={({ isActive }) => `drawer-link ${isActive ? 'active' : ''}`}>
+                Profile
               </NavLink>
             </nav>
           </div>
