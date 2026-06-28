@@ -20,27 +20,22 @@ const Profile = () => {
   const clearProfile = useProfileStore((s) => s.clearProfile);
 
   const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(!!profile?.customerEmail);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Auto-load the order history for the email saved at checkout.
+  // Load all orders so the history shows regardless of who placed them.
   useEffect(() => {
-    const email = profile?.customerEmail;
-    if (!email) {
-      setLoading(false);
-      return;
-    }
     (async () => {
       try {
-        const { data } = await api.get(`/orders/my?email=${encodeURIComponent(email)}`);
+        const { data } = await api.get('/orders/all');
         setOrders(data);
       } catch {
-        setError('Could not load your orders. Please try again.');
+        setError('Could not load orders. Please try again.');
       } finally {
         setLoading(false);
       }
     })();
-  }, [profile?.customerEmail]);
+  }, []);
 
   return (
     <>
@@ -103,7 +98,7 @@ const Profile = () => {
                     <div>
                       <div className="order-id">#{o.id.substring(0, 8).toUpperCase()}</div>
                       <div className="order-date">
-                        {new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {o.customerName} · {new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
                     </div>
                     <span className="order-status" style={{ color: cfg.color, background: cfg.bg }}>{o.status}</span>

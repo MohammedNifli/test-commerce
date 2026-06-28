@@ -10,6 +10,9 @@ router.post('/', createOrder);
 // Public: customer order history lookup by email (must precede param routes)
 router.get('/my', getOrdersByEmail);
 
+// Public: list all orders (used by the storefront Profile page)
+router.get('/all', getOrders);
+
 // Protected admin routes
 router.get('/', authenticateAdmin, getOrders);
 router.put('/:id/status', authenticateAdmin, updateOrderStatus);
