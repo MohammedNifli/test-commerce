@@ -124,3 +124,18 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error updating order status' });
   }
 };
+
+export const deleteOrder = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+    // OrderItem rows reference the order (FK) — remove them first, then the order.
+    await prisma.$transaction([
+      prisma.orderItem.deleteMany({ where: { orderId: id } }),
+      prisma.order.delete({ where: { id } }),
+    ]);
+    res.json({ message: 'Order deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    res.status(500).json({ message: 'Error deleting order' });
+  }
+};

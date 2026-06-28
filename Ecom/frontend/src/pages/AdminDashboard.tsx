@@ -57,6 +57,8 @@ const AdminDashboard = () => {
   // Orders
   const [expandedOrder, setExpandedOrder]   = useState<string | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [confirmDeleteOrderId, setConfirmDeleteOrderId] = useState<string | null>(null);
+  const [deletingOrderId, setDeletingOrderId]           = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -200,6 +202,20 @@ const AdminDashboard = () => {
       // silent
     } finally {
       setUpdatingStatus(null);
+    }
+  };
+
+  const handleDeleteOrder = async () => {
+    if (!confirmDeleteOrderId) return;
+    setDeletingOrderId(confirmDeleteOrderId);
+    try {
+      await api.delete(`/orders/${confirmDeleteOrderId}`);
+      setOrders(prev => prev.filter(o => o.id !== confirmDeleteOrderId));
+      setConfirmDeleteOrderId(null);
+    } catch {
+      alert('Failed to delete order');
+    } finally {
+      setDeletingOrderId(null);
     }
   };
 
@@ -492,8 +508,25 @@ const AdminDashboard = () => {
                                 {isUpdating && <Loader size={14} style={{ color: 'var(--text-secondary)', animation: 'spin 1s linear infinite' }} />}
                               </div>
                             </td>
-                            <td>
-                              {isExpanded ? <ChevronUp size={16} style={{ color: 'var(--text-secondary)' }} /> : <ChevronDown size={16} style={{ color: 'var(--text-secondary)' }} />}
+                            <td onClick={e => e.stopPropagation()}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                <button
+                                  className="icon-btn"
+                                  title="Delete order"
+                                  onClick={() => setConfirmDeleteOrderId(o.id)}
+                                  style={{ color: '#ef4444', background: 'rgba(239,68,68,0.1)' }}
+                                >
+                                  <Trash2 size={15} />
+                                </button>
+                                <button
+                                  className="icon-btn"
+                                  title={isExpanded ? 'Collapse' : 'Expand'}
+                                  onClick={() => setExpandedOrder(isExpanded ? null : o.id)}
+                                  style={{ background: 'transparent' }}
+                                >
+                                  {isExpanded ? <ChevronUp size={16} style={{ color: 'var(--text-secondary)' }} /> : <ChevronDown size={16} style={{ color: 'var(--text-secondary)' }} />}
+                                </button>
+                              </div>
                             </td>
                           </tr>
 
@@ -708,6 +741,36 @@ const AdminDashboard = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Order Confirm Modal ── */}
+      {confirmDeleteOrderId && (
+        <div style={modalOverlay} onClick={() => !deletingOrderId && setConfirmDeleteOrderId(null)}>
+          <div style={{ ...modalBox, maxWidth: '420px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(239,68,68,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+              <AlertTriangle size={28} style={{ color: '#ef4444' }} />
+            </div>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.5rem' }}>Delete Order?</h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.75rem', lineHeight: 1.6 }}>
+              This will permanently remove order{' '}
+              <strong style={{ color: 'var(--text-primary)', fontFamily: 'monospace' }}>
+                #{confirmDeleteOrderId.substring(0, 8).toUpperCase()}
+              </strong>{' '}
+              and its items. This cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button className="btn-secondary" style={{ flex: 1 }} disabled={!!deletingOrderId} onClick={() => setConfirmDeleteOrderId(null)}>Cancel</button>
+              <button
+                style={{ flex: 1, background: 'rgba(239,68,68,0.15)', color: '#ef4444', border: '1.5px solid rgba(239,68,68,0.4)', borderRadius: '10px', padding: '0.75rem', fontWeight: 700, cursor: deletingOrderId ? 'not-allowed' : 'pointer', opacity: deletingOrderId ? 0.6 : 1, fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                onClick={handleDeleteOrder}
+                disabled={!!deletingOrderId}
+              >
+                {deletingOrderId ? <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={16} />}
+                {deletingOrderId ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+            </div>
           </div>
         </div>
       )}

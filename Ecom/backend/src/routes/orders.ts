@@ -1,5 +1,5 @@
 import express from 'express';
-import { createOrder, getOrders, getOrdersByEmail, updateOrderStatus } from '../controllers/ordersController';
+import { createOrder, getOrders, getOrdersByEmail, updateOrderStatus, deleteOrder } from '../controllers/ordersController';
 import { authenticateAdmin } from '../middleware/auth';
 
 const router = express.Router();
@@ -16,5 +16,6 @@ router.get('/all', getOrders);
 // Protected admin routes
 router.get('/', authenticateAdmin, getOrders);
 router.put('/:id/status', authenticateAdmin, updateOrderStatus);
+router.delete('/:id', authenticateAdmin, deleteOrder);
 
 export default router;
